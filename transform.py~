@@ -1,0 +1,40 @@
+import pandas as pd
+import MySQLdb
+from data_helpers import *
+from datetime import datetime
+
+
+CON = MySQLdb.connect(host='198.71.51.98',
+                      port=3306,
+                      user='admin_user',
+                      passwd='gamal1980',
+                      db='titld')
+
+CON_DATA = MySQLdb.connect(host='198.71.51.98',
+                           port=3306,
+                           user='admin_user',
+                           passwd='gamal1980',
+                           db='titld_data')
+
+
+if __name__ == "__main__":
+
+    query = """SELECT `Facebook`.*, `Instagram`.*, `InstagramTag`.*, `Twitter`.*, `Wikipedia`.*
+FROM `Facebook`
+    JOIN `Instagram`
+        ON `Instagram`.artist_id = `Facebook`.artist_id
+    JOIN TableC
+        ON `InstagramTag`.artist_id = `Facebook`.artist_id
+    JOIN TableD
+        ON `Twitter`.artist_id = `Facebook`.artist_id
+    JOIN TableD
+        ON `Wikipedia`.artist_id = `Facebook`.artist_id"""
+    df = pd.read_sql_query(query,
+                           CON_DATA,
+                           index_col=None,
+                           coerce_float=True,
+                           params=None,
+                           parse_dates=None,
+                           chunksize=None)
+    
+    print df.sort("ts", ascending=True).groupby("artist_id")

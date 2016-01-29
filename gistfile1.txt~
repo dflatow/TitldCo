@@ -1,0 +1,12 @@
+# I've had a lot of problems with creating unique bins for decile analysis, 
+# so I wrote this code that won't give you the "non unique bin error" in pandas
+
+def calc_ranks(events, fields, result_field, cuts=10):
+	cut_size = cuts / 100.0
+	result = {}
+	for i in fields:
+		result[i] = {}
+		events[i+'_rank'] = events[i].rank(pct=True, ascending=True)
+		for j in range(cuts):
+			result[i][j] = events[(events[i+'_rank'] > j*cut_size) & (events[i+'_rank'] <= (j+1)*cut_size)][result_field].mean()
+	return pd.DataFrame(result)

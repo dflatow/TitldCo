@@ -1,0 +1,3 @@
+# I've had a lot of problems with creating unique bins for decile analysis, 
+# so I wrote this code that won't give you the "non unique bin error" in pandas
+
